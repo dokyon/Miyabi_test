@@ -8,7 +8,8 @@
     "build": "tsc",
     "test": "vitest",
     "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "agents:parallel:exec": "echo '🤖 Miyabi Agent execution' && exit 0"
   },
   "keywords": [
     "agentic-os",
