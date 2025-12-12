@@ -71,6 +71,8 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
+      metadata: read
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -93,7 +95,7 @@ jobs:
       - name: Create agent configuration
         run: |
           cat > .env << EOF
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN=${{ secrets.MIYABI_GITHUB_TOKEN }}
           ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
           DEVICE_IDENTIFIER="GitHub Actions Runner"
           ISSUE_NUMBER=${{ needs.check-trigger.outputs.issue_number }}
@@ -111,7 +113,7 @@ jobs:
             --concurrency 3 \
             --log-level info
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MIYABI_GITHUB_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         continue-on-error: true
 
