@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 - RAGシステム</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>RAGシステム 管理画面</h1>
+      <div class="header-actions">
+        <a href="/" class="btn btn-secondary">チャットUIへ</a>
+        <button id="refresh-status" class="btn btn-secondary">状態更新</button>
+      </div>
+    </header>
+
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-label">コレクション:</span>
+        <span id="collection-name">-</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">総ドキュメント数:</span>
+        <span id="total-documents">-</span>
+      </div>
+      <div class="status-item">
+        <button id="reset-db" class="btn btn-danger">データベースリセット</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-button" data-tab="datalist">データ一覧</button>
+      <button class="tab-button active" data-tab="customers">顧客データ</button>
+      <button class="tab-button" data-tab="quotes">見積データ</button>
+      <button class="tab-button" data-tab="workhistory">作業履歴</button>
+      <button class="tab-button" data-tab="bulk">一括取り込み</button>
+    </div>
+
+    <!-- データ一覧タブ -->
+    <div id="datalist-tab" class="tab-content">
+      <div class="form-section">
+        <h2>登録データ一覧</h2>
+
+        <div class="filter-section">
+          <label for="data-type-filter">データ種別:</label>
+          <select id="data-type-filter">
+            <option value="">すべて</option>
+            <option value="customer">顧客データ</option>
+            <option value="quote">見積データ</option>
+            <option value="work_history">作業履歴</option>
+          </select>
+          <button id="refresh-data-list" class="btn btn-secondary">更新</button>
+        </div>
+
+        <div id="data-list-container">
+          <p class="loading">データを読み込み中...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 顧客データタブ -->
+    <div id="customers-tab" class="tab-content active">
+      <div class="form-section">
+        <h2>顧客データ登録</h2>
+        <form id="customer-form" class="data-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customer-id">顧客ID <span class="required">*</span></label>
+              <input type="text" id="customer-id" required placeholder="CUST-001">
+            </div>
+            <div class="form-group">
+              <label for="customer-name">顧客名 <span class="required">*</span></label>
+              <input type="text" id="customer-name" required placeholder="山田自動車">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customer-phone">電話番号</label>
+              <input type="tel" id="customer-phone" placeholder="03-1234-5678">
+            </div>
+            <div class="form-group">
+              <label for="customer-email">メールアドレス</label>
+              <input type="email" id="customer-email" placeholder="info@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="customer-address">住所</label>
+            <input type="text" id="customer-address" placeholder="東京都渋谷区...">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="customer-tier">顧客ランク</label>
+              <select id="customer-tier">
+                <option value="VIP">VIP</option>
+                <option value="ゴールド">ゴールド</option>
+                <option value="シルバー">シルバー</option>
+                <option value="一般" selected>一般</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="customer-total-spent">累計利用額 (円)</label>
+              <input type="number" id="customer-total-spent" placeholder="0" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="customer-notes">備考</label>
+            <textarea id="customer-notes" rows="3" placeholder="特記事項など..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">顧客データを登録</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 見積データタブ -->
+    <div id="quotes-tab" class="tab-content">
+      <div class="form-section">
+        <h2>見積データ登録</h2>
+        <form id="quote-form" class="data-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="quote-id">見積ID <span class="required">*</span></label>
+              <input type="text" id="quote-id" required placeholder="Q-2024-001">
+            </div>
+            <div class="form-group">
+              <label for="quote-customer-id">顧客ID <span class="required">*</span></label>
+              <input type="text" id="quote-customer-id" required placeholder="CUST-001">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="quote-date">見積日 <span class="required">*</span></label>
+              <input type="date" id="quote-date" required>
+            </div>
+            <div class="form-group">
+              <label for="quote-amount">見積金額 (円) <span class="required">*</span></label>
+              <input type="number" id="quote-amount" required placeholder="100000" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="quote-description">作業内容 <span class="required">*</span></label>
+            <textarea id="quote-description" rows="3" required placeholder="フロントバンパー修理、塗装..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="quote-status">ステータス</label>
+            <select id="quote-status">
+              <option value="見積中" selected>見積中</option>
+              <option value="承認">承認</option>
+              <option value="却下">却下</option>
+              <option value="実施済み">実施済み</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary">見積データを登録</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 作業履歴タブ -->
+    <div id="workhistory-tab" class="tab-content">
+      <div class="form-section">
+        <h2>作業履歴登録</h2>
+        <form id="workhistory-form" class="data-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="work-id">作業ID <span class="required">*</span></label>
+              <input type="text" id="work-id" required placeholder="work_history_CUST-001">
+            </div>
+            <div class="form-group">
+              <label for="work-customer-id">顧客ID <span class="required">*</span></label>
+              <input type="text" id="work-customer-id" required placeholder="CUST-001">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="work-date">作業日 <span class="required">*</span></label>
+              <input type="date" id="work-date" required>
+            </div>
+            <div class="form-group">
+              <label for="work-amount">作業金額 (円) <span class="required">*</span></label>
+              <input type="number" id="work-amount" required placeholder="50000" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="work-description">作業内容 <span class="required">*</span></label>
+            <textarea id="work-description" rows="3" required placeholder="ドア修理、塗装作業..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="work-notes">備考</label>
+            <textarea id="work-notes" rows="2" placeholder="次回メンテナンス時期など..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">作業履歴を登録</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 一括取り込みタブ -->
+    <div id="bulk-tab" class="tab-content">
+      <div class="form-section">
+        <h2>ファイルから一括取り込み</h2>
+
+        <div class="upload-section">
+          <div class="form-group">
+            <label for="bulk-data-type">データ種別 <span class="required">*</span></label>
+            <select id="bulk-data-type">
+              <option value="customer">顧客データ</option>
+              <option value="quote">見積データ</option>
+              <option value="work_history">作業履歴</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bulk-file">JSONファイル <span class="required">*</span></label>
+            <input type="file" id="bulk-file" accept=".json" required>
+          </div>
+
+          <button id="bulk-upload-btn" class="btn btn-primary">一括取り込み実行</button>
+        </div>
+
+        <div class="info-section">
+          <h3>JSONフォーマット例（顧客データ）</h3>
+          <pre><code>[
+  {
+    "id": "CUST-001",
+    "name": "山田自動車",
+    "phone": "03-1234-5678",
+    "email": "info@yamada-auto.jp",
+    "address": "東京都渋谷区...",
+    "tier": "VIP",
+    "totalSpent": 500000,
+    "notes": "長年のお得意様"
+  }
+]</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

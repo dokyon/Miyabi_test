@@ -5,12 +5,44 @@
 
 import { getCRMConnector } from '../connectors/crmConnector.js';
 import { getVectorStore } from './vectorStore.js';
-import type { DataIngestionRequest, VectorDocument } from '../types/index.js';
+import type { DataIngestionRequest, DirectDataIngestionRequest, VectorDocument } from '../types/index.js';
 
 /**
  * データ取り込みサービス
  */
 export class DataIngestionService {
+  /**
+   * 直接データソースからデータを取り込み（Web UI用）
+   */
+  async ingestFromDirectSource(request: DirectDataIngestionRequest): Promise<number> {
+    const { source, dataType, metadata } = request;
+
+    try {
+      console.log(`📥 直接データ取り込み開始: ${dataType}`);
+
+      // ベクトルドキュメントに変換
+      const document: VectorDocument = {
+        id: `${dataType}_${metadata?.id || Date.now()}`,
+        content: source,
+        metadata: {
+          type: dataType,
+          ...metadata,
+        },
+      };
+
+      // ベクトルストアに追加
+      const vectorStore = await getVectorStore();
+      await vectorStore.addDocuments([document]);
+
+      console.log(`✅ 1件のデータを取り込みました`);
+
+      return 1;
+    } catch (error) {
+      console.error('❌ 直接データ取り込みエラー:', error);
+      throw new Error('データの取り込みに失敗しました');
+    }
+  }
+
   /**
    * 単一データソースからデータを取り込み
    */

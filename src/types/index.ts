@@ -168,6 +168,18 @@ export interface DataIngestionRequest {
   dataType: 'customer' | 'quote' | 'work_history';
 }
 
+/**
+ * 直接データ取り込みリクエスト（Web UI用）
+ */
+export interface DirectDataIngestionRequest {
+  /** テキストデータソース */
+  source: string;
+  /** データタイプ */
+  dataType: 'customer' | 'quote' | 'work_history';
+  /** メタデータ */
+  metadata?: Record<string, any>;
+}
+
 // =====================================
 // RAGシステム用の型定義
 // =====================================

@@ -74,7 +74,7 @@ export class RAGEngine {
    */
   async query(queryRequest: RAGQuery): Promise<RAGResponse> {
     const { query, options } = queryRequest;
-    const { topK = 5, minScore = 0.5 } = options || {};
+    const { topK = 5, minScore = 0.3 } = options || {};
 
     try {
       // 1. ベクトル検索で関連情報を取得
@@ -106,7 +106,7 @@ ${query}
 
       // 4. Claude APIを呼び出し
       const response = await this.anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-5-20250929',
         max_tokens: 1024,
         system: SYSTEM_PROMPT,
         messages: [
@@ -140,7 +140,7 @@ ${query}
    */
   async conversationalQuery(queryRequest: ConversationalRAGQuery): Promise<RAGResponse> {
     const { query, history, options } = queryRequest;
-    const { topK = 5, minScore = 0.5 } = options || {};
+    const { topK = 5, minScore = 0.3 } = options || {};
 
     try {
       // 1. ベクトル検索で関連情報を取得
@@ -181,7 +181,7 @@ ${query}
 
       // 4. Claude APIを呼び出し
       const response = await this.anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-sonnet-4-5-20250929',
         max_tokens: 1024,
         system: SYSTEM_PROMPT,
         messages,

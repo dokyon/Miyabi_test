@@ -12,12 +12,21 @@ import type {
   RAGQuery,
   ConversationalRAGQuery,
   DataIngestionRequest,
+  DirectDataIngestionRequest,
 } from '../types/index.js';
 
 const app = express();
 
 // ミドルウェア
 app.use(express.json());
+
+// 静的ファイル配信（public/ ディレクトリ）
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const publicPath = join(__dirname, '../../public');
+app.use(express.static(publicPath));
 
 // CORS設定（開発環境用）
 app.use((req, res, next) => {
@@ -103,14 +112,24 @@ app.post('/api/query/conversation', async (req: Request, res: Response) => {
  */
 app.post('/api/ingest', async (req: Request, res: Response) => {
   try {
-    const request: DataIngestionRequest = req.body;
+    const requestBody = req.body;
 
-    if (!request.source || !request.dataType) {
+    if (!requestBody.source || !requestBody.dataType) {
       return res.status(400).json({ error: 'source と dataType が必要です' });
     }
 
     const service = getDataIngestionService();
-    const count = await service.ingestFromSource(request);
+    let count: number;
+
+    // sourceが文字列の場合は直接データ取り込み（Web UI用）
+    if (typeof requestBody.source === 'string') {
+      const request: DirectDataIngestionRequest = requestBody;
+      count = await service.ingestFromDirectSource(request);
+    } else {
+      // sourceがオブジェクトの場合は従来のデータ取り込み
+      const request: DataIngestionRequest = requestBody;
+      count = await service.ingestFromSource(request);
+    }
 
     res.json({
       success: true,
@@ -214,6 +233,35 @@ app.post('/api/reset', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * ドキュメント一覧取得
+ */
+app.get('/api/documents', async (req: Request, res: Response) => {
+  try {
+    const vectorStore = await getVectorStore();
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+    const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+    const type = req.query.type as string | undefined;
+
+    const filter = type ? { type } : undefined;
+
+    const documents = await vectorStore.listDocuments({
+      limit,
+      offset,
+      filter,
+    });
+
+    res.json({
+      success: true,
+      total: documents.length,
+      documents,
+    });
+  } catch (error: any) {
+    console.error('❌ ドキュメント一覧取得エラー:', error);
+    res.status(500).json({ error: error.message || 'ドキュメント一覧の取得に失敗しました' });
+  }
+});
+
 // =====================================
 // サーバー起動
 // =====================================
@@ -229,6 +277,8 @@ export async function startServer(): Promise<void> {
 🚀 RAGシステムAPIサーバー起動
    ポート: ${PORT}
    環境: ${env.NODE_ENV}
+
+🌐 Web UI: http://localhost:${PORT}
 
 利用可能なエンドポイント:
    GET  /health                      - ヘルスチェック

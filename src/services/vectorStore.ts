@@ -22,9 +22,10 @@ export class VectorStore {
 
   constructor() {
     // ChromaDBクライアントの初期化
-    this.client = new ChromaClient({
-      path: env.CHROMA_DB_PATH,
-    });
+    // Note: JavaScript版ChromaDBはHTTPサーバーへの接続が必要
+    // デフォルトでlocalhost:8000に接続
+    // 開発環境ではインメモリストレージを使用する場合もあり
+    this.client = new ChromaClient();
 
     // OpenAIクライアントの初期化
     this.openai = new OpenAI({
@@ -224,6 +225,46 @@ export class VectorStore {
     } catch (error) {
       console.error('❌ コレクションリセットエラー:', error);
       throw new Error('コレクションのリセットに失敗しました');
+    }
+  }
+
+  /**
+   * すべてのドキュメントを取得
+   */
+  async listDocuments(options?: {
+    limit?: number;
+    offset?: number;
+    filter?: Record<string, any>;
+  }): Promise<VectorDocument[]> {
+    if (!this.collection) {
+      throw new Error('コレクションが初期化されていません。initialize()を先に呼び出してください。');
+    }
+
+    try {
+      const { limit, offset, filter } = options || {};
+
+      const results = await this.collection.get({
+        limit,
+        offset,
+        where: filter,
+      });
+
+      const documents: VectorDocument[] = [];
+
+      if (results.ids) {
+        for (let i = 0; i < results.ids.length; i++) {
+          documents.push({
+            id: results.ids[i],
+            content: results.documents?.[i] || '',
+            metadata: results.metadatas?.[i] || {},
+          });
+        }
+      }
+
+      return documents;
+    } catch (error) {
+      console.error('❌ ドキュメント一覧取得エラー:', error);
+      throw new Error('ドキュメントの一覧取得に失敗しました');
     }
   }
 }

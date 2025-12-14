@@ -1,0 +1,79 @@
+[
+  {
+    "id": "CUST-001",
+    "name": "山田太郎",
+    "phone": "090-1234-5678",
+    "email": "yamada@example.com",
+    "address": "東京都渋谷区1-2-3",
+    "tier": "ゴールド",
+    "totalSpent": 450000,
+    "notes": "リピーター。車検時期は毎年3月。高級車所有（ベンツSクラス）"
+  },
+  {
+    "id": "CUST-002",
+    "name": "佐藤花子",
+    "phone": "080-2345-6789",
+    "email": "sato.hanako@example.com",
+    "address": "神奈川県横浜市2-3-4",
+    "tier": "シルバー",
+    "totalSpent": 280000,
+    "notes": "バンパー修理とコーティング施工済み。次回来店予定は6月"
+  },
+  {
+    "id": "CUST-003",
+    "name": "鈴木一郎",
+    "phone": "070-3456-7890",
+    "address": "千葉県千葉市3-4-5",
+    "tier": "一般",
+    "totalSpent": 150000,
+    "notes": "初回来店。駐車場での接触事故による修理。保険適用"
+  },
+  {
+    "id": "CUST-004",
+    "name": "田中美咲",
+    "phone": "090-4567-8901",
+    "email": "tanaka.misaki@example.com",
+    "address": "埼玉県さいたま市4-5-6",
+    "tier": "VIP",
+    "totalSpent": 620000,
+    "notes": "VIP顧客。定期的なメンテナンスとコーティング更新を依頼。車3台所有"
+  },
+  {
+    "id": "CUST-005",
+    "name": "高橋健二",
+    "phone": "080-5678-9012",
+    "address": "東京都世田谷区5-6-7",
+    "tier": "一般",
+    "totalSpent": 95000,
+    "notes": "へこみ修理のみ。急ぎの対応を希望"
+  },
+  {
+    "id": "CUST-006",
+    "name": "伊藤直樹",
+    "phone": "090-6789-0123",
+    "email": "ito.naoki@example.com",
+    "address": "神奈川県川崎市6-7-8",
+    "tier": "ゴールド",
+    "totalSpent": 380000,
+    "notes": "法人契約。社用車5台の定期メンテナンス契約あり"
+  },
+  {
+    "id": "CUST-007",
+    "name": "渡辺加奈",
+    "phone": "070-7890-1234",
+    "email": "watanabe.kana@example.com",
+    "address": "東京都品川区7-8-9",
+    "tier": "シルバー",
+    "totalSpent": 210000,
+    "notes": "全塗装とホイール交換実施。仕上がりに大変満足との評価"
+  },
+  {
+    "id": "CUST-008",
+    "name": "中村雄二",
+    "phone": "080-8901-2345",
+    "address": "千葉県船橋市8-9-10",
+    "tier": "一般",
+    "totalSpent": 180000,
+    "notes": "小さな傷修理のリピーター。価格重視の傾向"
+  }
+]
